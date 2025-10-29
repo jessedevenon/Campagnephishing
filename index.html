@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alerte Sécurité</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #000;
+            overflow-x: hidden;
+        }
+
+        /* Phase 1: Alerte danger */
+        #alert-phase {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a0000 0%, #330000 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            animation: pulseRed 2s infinite;
+        }
+
+        @keyframes pulseRed {
+            0%, 100% { background-color: #1a0000; }
+            50% { background-color: #4a0000; }
+        }
+
+        .warning-icon {
+            width: 150px;
+            height: 150px;
+            border: 8px solid #ff0000;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 30px;
+            animation: shake 0.5s infinite;
+            background: rgba(255, 0, 0, 0.1);
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px) rotate(-5deg); }
+            75% { transform: translateX(10px) rotate(5deg); }
+        }
+
+        .warning-icon::before {
+            content: '⚠';
+            font-size: 80px;
+            color: #ff0000;
+        }
+
+        .alert-title {
+            color: #ff0000;
+            font-size: 42px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .alert-subtitle {
+            color: #fff;
+            font-size: 24px;
+            text-align: center;
+            margin-bottom: 30px;
+            max-width: 700px;
+        }
+
+        .fake-loading {
+            width: 400px;
+            height: 8px;
+            background: #333;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 30px 0;
+        }
+
+        .fake-loading-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #ff0000, #ff6666);
+            width: 0%;
+            animation: loading 3s ease-in-out forwards;
+        }
+
+        @keyframes loading {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+
+        /* Phase 2: Révélation */
+        #reveal-phase {
+            display: none;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0a4d0a 0%, #1a7a1a 100%);
+            padding: 40px 20px;
+            animation: fadeIn 1s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .reveal-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 50px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .success-icon {
+            width: 100px;
+            height: 100px;
+            border: 6px solid #28a745;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 30px;
+            background: #d4edda;
+        }
+
+        .success-icon::before {
+            content: '✓';
+            font-size: 60px;
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        .reveal-title {
+            color: #28a745;
+            font-size: 36px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .reveal-subtitle {
+            color: #333;
+            font-size: 20px;
+            text-align: center;
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+
+        .info-box {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 5px;
+        }
+
+        .info-box h3 {
+            color: #856404;
+            margin-bottom: 15px;
+            font-size: 22px;
+        }
+
+        .tips-section {
+            margin-top: 40px;
+        }
+
+        .tips-section h2 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .tip {
+            background: #f8f9fa;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 10px;
+            border-left: 4px solid #007bff;
+        }
+
+        .tip-title {
+            color: #007bff;
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tip-title::before {
+            content: '🛡️';
+            font-size: 24px;
+        }
+
+        .tip-content {
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px solid #dee2e6;
+            color: #666;
+        }
+
+        .footer strong {
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <!-- Phase 1: Alerte -->
+    <div id="alert-phase">
+        <div class="warning-icon"></div>
+        <h1 class="alert-title">⚠ ALERTE SÉCURITÉ ⚠</h1>
+        <p class="alert-subtitle">
+            VOTRE ORDINATEUR EST INFECTÉ PAR UN VIRUS !<br>
+            Analyse en cours...
+        </p>
+        <div class="fake-loading">
+            <div class="fake-loading-bar"></div>
+        </div>
+        <p style="color: #ff6666; font-size: 18px; margin-top: 20px;">
+            Ne pas éteindre l'ordinateur...
+        </p>
+    </div>
+
+    <!-- Phase 2: Révélation -->
+    <div id="reveal-phase">
+        <div class="reveal-container">
+            <div class="success-icon"></div>
+            
+            <h1 class="reveal-title">Pas de panique ! C'était un test 😊</h1>
+            
+            <p class="reveal-subtitle">
+                <strong>Vous avez cliqué sur un lien dans un e-mail de test de phishing.</strong><br>
+                Votre ordinateur n'est pas infecté, tout va bien !
+            </p>
+
+            <div class="info-box">
+                <h3>📧 Objectif de ce test</h3>
+                <p>Ce test vise à sensibiliser tous les collaborateurs du cabinet aux risques de cybersécurité. 
+                Les attaques par phishing (hameçonnage) sont la première cause de cyberattaques dans les entreprises, 
+                particulièrement dans les cabinets d'expertise comptable qui manipulent des données sensibles.</p>
+            </div>
+
+            <div class="tips-section">
+                <h2>🔒 Les bons réflexes à adopter</h2>
+
+                <div class="tip">
+                    <div class="tip-title">Vérifiez l'expéditeur</div>
+                    <div class="tip-content">
+                        Passez votre souris sur l'adresse e-mail de l'expéditeur. Méfiez-vous des adresses suspectes 
+                        ou légèrement différentes d'adresses officielles (ex: comptabilite@cabinet-expert.com vs comptabilite@cabinet-exper1.com)
+                    </div>
+                </div>
+
+                <div class="tip">
+                    <div class="tip-title">Analysez le contenu du message</div>
+                    <div class="tip-content">
+                        Soyez vigilant face aux messages créant un sentiment d'urgence, demandant des informations 
+                        confidentielles, ou contenant des fautes d'orthographe inhabituelles.
+                    </div>
+                </div>
+
+                <div class="tip">
+                    <div class="tip-title">Vérifiez les liens avant de cliquer</div>
+                    <div class="tip-content">
+                        Survolez les liens avec votre souris (sans cliquer) pour voir l'URL réelle. 
+                        Ne cliquez jamais sur un lien suspect, même s'il semble provenir d'un expéditeur connu.
+                    </div>
+                </div>
+
+                <div class="tip">
+                    <div class="tip-title">Méfiez-vous des pièces jointes</div>
+                    <div class="tip-content">
+                        N'ouvrez jamais une pièce jointe inattendue, même si elle semble provenir d'un collègue. 
+                        En cas de doute, contactez l'expéditeur par un autre moyen (téléphone, messagerie interne).
+                    </div>
+                </div>
+
+                <div class="tip">
+                    <div class="tip-title">En cas de doute, signalez !</div>
+                    <div class="tip-content">
+                        Si vous recevez un e-mail suspect, ne cliquez sur rien et contactez immédiatement le service informatique. 
+                        Il vaut mieux signaler un faux positif que de risquer une vraie cyberattaque.
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer">
+                <p><strong>Ce test fait partie de notre programme de sensibilisation à la cybersécurité.</strong></p>
+                <p style="margin-top: 10px;">
+                    Votre clic a été enregistré de manière anonyme pour nous permettre d'adapter nos formations.<br>
+                    Pour toute question, contactez le service informatique.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tracking du clic (à adapter selon votre système)
+        function trackClick() {
+            // Récupération de l'ID utilisateur depuis l'URL (ex: ?user=identifiant)
+            const urlParams = new URLSearchParams(window.location.search);
+            const userId = urlParams.get('user') || 'anonyme';
+            const timestamp = new Date().toISOString();
+            
+            // Envoi des données de tracking
+            // Option 1: Via une image invisible (Google Analytics style)
+            const trackImg = new Image();
+            trackImg.src = `/track-phishing?user=${encodeURIComponent(userId)}&time=${encodeURIComponent(timestamp)}`;
+            
+            // Option 2: Via fetch API (plus moderne)
+            /*
+            fetch('/api/track-phishing', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    userId: userId,
+                    timestamp: timestamp,
+                    userAgent: navigator.userAgent
+                })
+            }).catch(err => console.log('Tracking failed'));
+            */
+            
+            console.log(`Test phishing - Clic enregistré pour: ${userId}`);
+        }
+
+        // Exécution au chargement
+        trackClick();
+
+        // Transition après 3 secondes
+        setTimeout(() => {
+            document.getElementById('alert-phase').style.display = 'none';
+            document.getElementById('reveal-phase').style.display = 'block';
+            window.scrollTo(0, 0);
+        }, 3500);
+    </script>
+</body>
+</html>
